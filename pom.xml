@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.centraldesktop</groupId>
+    <artifactId>php-jmx</artifactId>
+    <name>PHP JMX</name>
+    <version>1.0-SNAPSHOT</version>
+    <!-- For the moment, specify pom as packaging for php projects -->
+    <packaging>pom</packaging>
+
+    <!-- some properties that you may want to change -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <sonar.scm.url>scm:git:file://.</sonar.scm.url>
+        <sonar.language>php</sonar.language>
+        <sonar.verbose>true</sonar.verbose>
+
+
+        <!--WTF, generating an XML file but sonar is not accepting it.  Not compat with version 1.4?-->
+        <!--<sonar.phpPmd.skip>true</sonar.phpPmd.skip>-->
+
+        <!--  target/logs/pmd.xml -->
+        <sonar.phpPmd.analyzeOnly>true</sonar.phpPmd.analyzeOnly>
+
+        <!--target/logs/codesniffer.xml-->
+        <sonar.phpCodesniffer.analyzeOnly>true</sonar.phpCodesniffer.analyzeOnly>
+
+        <!---c "vendor/bin/pdepend --summary-xml=target/logs/pdepend.xml --jdepend-chart=target/logs/jdepend.svg --overview-pyramid=target/logs/pyramid.svg src"-->
+        <sonar.phpDepend.analyzeOnly>true</sonar.phpDepend.analyzeOnly>
+        <sonar.phpDepend.reportType>summary-xml</sonar.phpDepend.reportType>
+        <sonar.phpDepend.reportPath>target/logs/pdepend.xml</sonar.phpDepend.reportPath>
+
+        <!--target/logs/phpunit.xml target/logs/phpunit.coverage.xml -->
+        <sonar.phpUnit.coverage.analyzeOnly>true</sonar.phpUnit.coverage.analyzeOnly>
+        <sonar.phpUnit.analyzeOnly>true</sonar.phpUnit.analyzeOnly>
+
+        <sonargraph.prepareForSonar>true</sonargraph.prepareForSonar>
+    </properties>
+
+
+    <build>
+        <!-- You cannot omit this one, because maven will implicitly add src/main/java
+      to it -->
+        <sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>test</testSourceDirectory>
+
+    </build>
+
+</project>

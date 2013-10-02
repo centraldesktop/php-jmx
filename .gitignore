@@ -4,3 +4,4 @@ vendor
 report
 reports
 test-results
+composer.lock

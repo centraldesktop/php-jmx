@@ -38,14 +38,31 @@ class ReadCommand extends Command {
         $client = new Client($input->getArgument("uri"),
                              $input->getOption("user"),
                              $input->getOption("password"));
-        $bean = $client->bean($input->getArgument("object"));
+        $bean   = $client->bean($input->getArgument("object"));
 
         $bean->read();
 
-        $output->write(print_r($bean->getAttributes(), true));
+        $attributes = $bean->getAttributes();
+        $keys       = array_keys($attributes);
+
+        foreach ($keys as $key) {
+            $value = $attributes[$key];
+
+            if (is_array($value)) {
+                $output->writeln("$key : array(" . count($value) . ")");
+                foreach ($value as $el) {
+                    $output->writeln("  --> $el ");
+                }
+
+            }
+            else {
+                $output->writeln("$key : ");
+            }
+
+        }
+
     }
 }
-
 
 
 $application = new Application();

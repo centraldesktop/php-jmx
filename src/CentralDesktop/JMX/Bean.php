@@ -27,12 +27,19 @@ class Bean implements \Psr\Log\LoggerAwareInterface {
         $this->_logger = new \Psr\Log\NullLogger();
     }
 
+    public function getName(){
+        return $this->_name;
+    }
+
+    /**
+     * Retches remote values
+     */
     public
     function read() {
-        $response =  $this->_client->read($this->_name);
+        $response          = $this->_client->read($this->_name);
         $this->_attributes = $response['value'];
 
-        $this->_logger->debug("Added attributes from read". $this->_attributes);
+        $this->_logger->debug("Added attributes from read" . $this->_attributes);
     }
 
     public
@@ -41,15 +48,21 @@ class Bean implements \Psr\Log\LoggerAwareInterface {
     }
 
 
+    /**
+     * @param $attr Attribute name
+     *
+     * @return mixed
+     * @throws JMXException
+     */
     public
-    function __get($attr) {
+    function getAttribute($attr) {
         // autoload from remote if we don't have any data
         if (count($this->_attributes) == 0) {
             $this->read();
         }
 
         if (array_key_exists($attr, $this->_attributes)) {
-            return $this->_attributes[$attr];
+            return $this->xformArray($this->_attributes[$attr]);
         }
         else {
             $this->_logger->warning("Unknown attribute",
@@ -59,8 +72,20 @@ class Bean implements \Psr\Log\LoggerAwareInterface {
         }
     }
 
-    public function getAttributes(){
-        return $this->_attributes;
+
+    /**
+     *
+     *Dumps all attributes
+     *
+     */
+    public
+    function getAttributes() {
+        $out = array();
+        foreach (array_keys($this->_attributes) as $key) {
+            $out[$key] = $this->getAttribute($key);
+        }
+
+        return $out;
     }
 
 
@@ -74,5 +99,47 @@ class Bean implements \Psr\Log\LoggerAwareInterface {
     public
     function setLogger(LoggerInterface $logger) {
         $this->_logger = $logger;
+    }
+
+    /**
+     *
+     * Looks for arrays of bean references and returns Bean objects instead
+     * of the raw name
+     *
+     * From the JSON/PHP point of view this manifests itself like
+     * array (
+     *        array (
+     *               [objectName] => org.apache...,type=Foo
+     *        )
+     * )
+     *
+     * @param $value
+     *
+     * @return array
+     */
+    private
+    function xformArray($value) {
+        if (is_array($value) && count($value) > 0 &&
+            array_key_exists(0, $value) && is_array($value[0]) &&
+            array_key_exists('objectName', $value[0])
+        ) {
+
+            $client = $this->_client;
+            return array_map(
+
+                function ($a) use ($client) {
+                    return new Bean($client, $a['objectName']);
+                },
+                $value);
+        }
+        else {
+            return $value;
+        }
+    }
+
+
+    public
+    function __toString() {
+        return "mbean:{$this->_name}";
     }
 }

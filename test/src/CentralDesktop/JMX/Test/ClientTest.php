@@ -10,6 +10,20 @@
 namespace CentralDesktop\JMX\Test;
 
 
-class ClientTest { # extends \PHPUnit_Framework_TestCase {
 
+
+use CentralDesktop\JMX\Client;
+use Mockery as m;
+
+class ClientTest extends \PHPUnit_Framework_TestCase {
+
+    public
+    function       testBeanMe() {
+
+        $c = new Client("abcd");
+        $b = $c->bean("1234");
+
+        $this->assertInstanceOf('\CentralDesktop\JMX\Bean', $b);
+        $this->assertSame($b->getName(), "1234");
+    }
 }

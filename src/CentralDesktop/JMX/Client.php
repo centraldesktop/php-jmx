@@ -15,6 +15,7 @@ class Client implements \Psr\Log\LoggerAwareInterface {
     private $username;
     private $password;
 
+    /** @var \Guzzle\Http\Client */
     private $g;
 
     /**
@@ -23,7 +24,7 @@ class Client implements \Psr\Log\LoggerAwareInterface {
      * @param $password
      */
     public
-    function __construct($uri, $username, $password) {
+    function __construct($uri, $username = "", $password = "") {
         error_log("$username $password");
         $this->uri      = $uri;
         $this->username = $username;
@@ -31,20 +32,22 @@ class Client implements \Psr\Log\LoggerAwareInterface {
 
         $this->logger = new \Psr\Log\NullLogger();
 
-        $this->g = new Http\Client($uri);
 
-        $this->g->setDefaultOption('auth',
+
+        $client = new Http\Client($uri);
+
+        $client->setDefaultOption('auth',
                                    array($username, $password, 'Basic'));
 
-        $this->g->setDefaultOption('timeout', 5);
-        $this->g->setDefaultOption('connect_timeout', 1);
+        $client->setDefaultOption('timeout', 5);
+        $client->setDefaultOption('connect_timeout', 1);
+
+        $this->setClient($client);
     }
 
-    /**
-     */
-    public
-    function connect($uri, $username, $password) {
-        $this->logger->debug("Connecting to $uri");
+
+    public function setClient(\Guzzle\Http\Client $client){
+        $this->g = $client;
     }
 
 

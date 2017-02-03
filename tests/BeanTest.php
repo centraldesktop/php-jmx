@@ -7,14 +7,15 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace CentralDesktop\JMX\Test;
+namespace CentralDesktop\JMX\Tests;
 
 
 use CentralDesktop\JMX\Bean;
 use Mockery as m;
 
-class BeanTest extends \PHPUnit_Framework_TestCase {
-
+class BeanTest extends \PHPUnit_Framework_TestCase
+{
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
     public
     function testRead() {

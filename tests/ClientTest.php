@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace CentralDesktop\JMX\Test;
+namespace CentralDesktop\JMX\Tests;
 
 
 
